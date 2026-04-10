@@ -1,0 +1,78 @@
+version: "3.9"
+
+services:
+
+  gateway:
+    build: https://github.com/Roony11-1/sanos-gateway.git
+    container_name: sanos-gateway
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mascotas
+      - coincidencias
+      - geo
+
+  mascotas:
+    build: https://github.com/Roony11-1/mascotas-service.git
+    container_name: mascotas-service
+    depends_on:
+      - mascotas-db
+
+  mascotas-db:
+    image: postgres:15
+    container_name: mascotas-db
+    environment:
+      POSTGRES_DB: mascotas
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: pass
+    volumes:
+      - mascotas-data:/var/lib/postgresql/data
+
+  coincidencias:
+    build: https://github.com/Roony11-1/coincidencias-service.git
+    container_name: coincidencias-service
+    depends_on:
+      - coincidencias-db
+
+  coincidencias-db:
+    image: postgres:15
+    container_name: coincidencias-db
+    environment:
+      POSTGRES_DB: coincidencias
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: pass
+    volumes:
+      - coincidencias-data:/var/lib/postgresql/data
+
+  geo:
+    build: https://github.com/Roony11-1/geo-service.git
+    container_name: geo-service
+    depends_on:
+      - geo-db
+
+  geo-db:
+    image: postgis/postgis:15-3.4
+    container_name: geo-db
+    environment:
+      POSTGRES_DB: geo
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: pass
+    volumes:
+      - geo-data:/var/lib/postgresql/data
+
+  frontend:
+    build: https://github.com/Roony11-1/sanos-salvos-front.git
+    container_name: frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - gateway
+
+networks:
+  default:
+    name: sanos-salvos-network
+
+volumes:
+  mascotas-data:
+  coincidencias-data:
+  geo-data:
