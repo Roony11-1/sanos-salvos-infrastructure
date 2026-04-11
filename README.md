@@ -1,4 +1,4 @@
-# 🐾 Proyecto Sanos y Salvos
+# Proyecto Sanos y Salvos
 
 **Trabajo Semestral - Arquitectura Fullstack 3**
 
@@ -43,7 +43,7 @@ El sistema utiliza una arquitectura orientada a eventos (EDA) impulsada por **Ap
 
 <br>
 
-## 🔗 Repositorios del Proyecto
+## Repositorios del Proyecto
 
 El proyecto está dividido en los siguientes repositorios. Es necesario tenerlos todos para el correcto funcionamiento del ecosistema:
 
