@@ -10,19 +10,18 @@
 
 <br>
 
-## 🏛️ Arquitectura del Sistema
+## Arquitectura del Sistema
 
 El sistema utiliza una arquitectura orientada a eventos (EDA) impulsada por **Apache Kafka** para garantizar un acoplamiento débil y alta escalabilidad entre los servicios.
 
 ### Componentes Principales:
 
-* 🐶 **Servicio de Mascotas (ASP.NET):** Encargado de la gestión y registro de los animales. Publica eventos (Producer) como "Animal registrado como perdido" en Kafka. Utiliza una base de datos **PostgreSQL**.
-* 🔍 **Servicio de Coincidencias (Java):** Consume eventos de Kafka para analizar y marcar coincidencias entre mascotas perdidas y encontradas. Tiene su propia base de datos **PostgreSQL**.
-* 📍 **Servicio de Geolocalización (Java):** Consume eventos para gestionar las ubicaciones geográficas de los avistamientos y pérdidas. Utiliza **PostGIS** para el manejo avanzado de datos espaciales.
-* 📨 **Apache Kafka:** Actúa como el bus de mensajes del sistema (ejecutándose en modo KRaft, sin Zookeeper).
-* 🌐 **Gateway & BFF:** Un API Gateway interactúa con un Backend For Frontend (Express) para orquestar las peticiones hacia los microservicios.
-* 🔐 **Seguridad:** Autenticación y autorización delegadas a **Auth0**.
-* 💻 **Frontend:** Interfaz de usuario final que se comunica a través del Gateway.
+* **Servicio de Mascotas (ASP.NET):** Encargado de la gestión y registro de los animales. Publica eventos (Producer) como "Animal registrado como perdido" en Kafka. Utiliza una base de datos **PostgreSQL**.
+* **Servicio de Coincidencias (Java):** Consume eventos de Kafka para analizar y marcar coincidencias entre mascotas perdidas y encontradas. Tiene su propia base de datos **PostgreSQL**.
+* **Servicio de Geolocalización (Java):** Consume eventos para gestionar las ubicaciones geográficas de los avistamientos y pérdidas. Utiliza **PostGIS** para el manejo avanzado de datos espaciales.
+* **Apache Kafka:** Actúa como el bus de mensajes del sistema (ejecutándose en modo KRaft, sin Zookeeper).
+* **Seguridad:** Autenticación y autorización delegadas a **Auth0**.
+* **Frontend:** Interfaz de usuario final que se comunica a través del Gateway.
 
 <br>
 
@@ -30,7 +29,7 @@ El sistema utiliza una arquitectura orientada a eventos (EDA) impulsada por **Ap
 
 <br>
 
-## 🛠️ Tecnologías Utilizadas
+## Tecnologías Utilizadas
 
 * **Backend:** Java (Spring Boot), ASP.NET Core, Node.js/Express.
 * **Bases de Datos:** PostgreSQL 15, PostGIS (para el microservicio geográfico).
