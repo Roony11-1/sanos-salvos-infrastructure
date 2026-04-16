@@ -12,7 +12,7 @@ echo.
 echo [2/2] Iniciando clonacion de repositorios...
 echo.
 
-for %%r in (coincidencias-service geo-service mascotas-service sanos-gateway) do (
+for %%r in (coincidencias-service geo-service mascotas-service sanos-gateway sanos-salvos-front) do (
     echo --------------------------------------------
     echo Clonando repositorio: %%r
     git clone https://github.com/Roony11-1/%%r.git
