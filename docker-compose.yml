@@ -7,7 +7,7 @@ services:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: pass
     ports:
-      - "5432:5432"
+      - "5431:5432"
     volumes:
       - mascotas-data:/var/lib/postgresql/data
   coincidencias-db:
