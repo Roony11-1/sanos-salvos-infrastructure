@@ -18,6 +18,7 @@ geo-service
 mascotas-service
 sanos-gateway
 sanos-salvos-front
+sanos-salvos-astro
 ) do (
 
     echo --------------------------------------------
