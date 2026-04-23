@@ -1,6 +1,6 @@
 @echo off
 echo ============================================
-echo   CLONANDO MICROSERVICIOS SANOS Y SALVOS
+echo  SINCRONIZANDO MICROSERVICIOS SANOS Y SALVOS
 echo ============================================
 
 echo.
@@ -9,21 +9,37 @@ cd ..
 echo Directorio actual: %cd%
 
 echo.
-echo [2/2] Iniciando clonacion de repositorios...
+echo [2/2] Verificando repositorios...
 echo.
 
-for %%r in (coincidencias-service geo-service mascotas-service sanos-gateway sanos-salvos-front) do (
+for %%r in (
+coincidencias-service
+geo-service
+mascotas-service
+sanos-gateway
+sanos-salvos-front
+) do (
+
     echo --------------------------------------------
-    echo Clonando repositorio: %%r
-    git clone https://github.com/Roony11-1/%%r.git
+    echo Procesando: %%r
+
+    if exist %%r (
+        echo Repositorio existente, actualizando...
+        cd %%r
+        git pull
+        cd ..
+    ) else (
+        echo No existe, clonando...
+        git clone https://github.com/Roony11-1/%%r.git
+    )
+
     echo Finalizado: %%r
     echo --------------------------------------------
     echo.
 )
 
 echo ============================================
-echo   PROCESO FINALIZADO
+echo PROCESO FINALIZADO
 echo ============================================
-echo.
 
 pause
