@@ -27,7 +27,8 @@ sanos-salvos-astro
     if exist %%r (
         echo Repositorio existente, actualizando...
         cd %%r
-        git pull
+        git checkout main
+		git pull --rebase origin main
         cd ..
     ) else (
         echo No existe, clonando...
