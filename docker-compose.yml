@@ -56,13 +56,15 @@ services:
       
   kafka-setup-reportes:
     image: confluentinc/cp-kafka:7.4.0
-    depends_on: [kafka]
+    depends_on:
+      - kafka
     command: >
       kafka-topics --create --if-not-exists --topic reporte-registrado --bootstrap-server kafka:9092 --partitions 3 --replication-factor 1
 
   kafka-setup-matches:
     image: confluentinc/cp-kafka:7.4.0
-    depends_on: [kafka]
+    depends_on:
+      - kafka
     command: >
       kafka-topics --create --if-not-exists --topic matches-detectados --bootstrap-server kafka:9092 --partitions 3 --replication-factor 1
 
@@ -106,6 +108,9 @@ services:
       - coincidencias-service
       - geo-service
       - mascotas-service
+      - kafka-setup-reportes
+      - kafka-setup-matches
+      - kafka-ui
   frontend:
     build: ../sanos-salvos-front
     container_name: frontend
