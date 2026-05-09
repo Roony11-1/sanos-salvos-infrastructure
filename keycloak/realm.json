@@ -11,10 +11,10 @@
             "standardFlowEnabled": true,
             "implicitFlowEnabled": false,
             "directAccessGrantsEnabled": true,
-            "redirectUris": ["http://localhost/*"],
-            "webOrigins": ["*"],
-            "rootUrl": "http://localhost",
-            "baseUrl": "http://localhost"
+            "redirectUris": ["http://localhost/app/*"],
+            "webOrigins": ["http://localhost"],
+            "rootUrl": "http://localhost/app",
+            "baseUrl": "http://localhost/app"
         },
         {
         "clientId": "sanos-backend",

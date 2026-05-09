@@ -112,13 +112,29 @@ services:
       - kafka-setup-matches
       - kafka-ui
       - keycloak
+
   frontend:
-    build: ../sanos-salvos-front
-    container_name: frontend
-    ports:
-      - "80:80"
-    depends_on:
-      - gateway
+      build: ../sanos-salvos-front
+      container_name: frontend
+      ports:
+        - "80:80"
+      volumes:
+        - ./proxy-web/nginx-custom.conf:/etc/nginx/conf.d/default.conf
+      depends_on:
+        - gateway
+        - astro
+      networks:
+        - default
+
+  astro:
+      build: ../sanos-salvos-astro
+      container_name: astro-landing
+      expose:
+        - "80"
+      # ports:
+      #   - "3000:80"
+      networks:
+        - default
 
   keycloak:
     image: quay.io/keycloak/keycloak:25.0.6
