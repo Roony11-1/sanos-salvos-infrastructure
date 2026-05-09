@@ -19,7 +19,8 @@ El sistema utiliza una arquitectura orientada a eventos (EDA) impulsada por **Ap
 * **Servicio de Mascotas (ASP.NET):** Encargado de la gestión y registro de los animales. Publica eventos (Producer) como "Animal registrado como perdido" en Kafka. Utiliza una base de datos **PostgreSQL**.
 * **Servicio de Coincidencias (Java):** Consume eventos de Kafka para analizar y marcar coincidencias entre mascotas perdidas y encontradas. Tiene su propia base de datos **PostgreSQL**.
 * **Servicio de Geolocalización (Java):** Consume eventos para gestionar las ubicaciones geográficas de los avistamientos y pérdidas. Utiliza **PostGIS** para el manejo avanzado de datos espaciales.
-* **Apache Kafka:** Actúa como el bus de mensajes del sistema (ejecutándose en modo KRaft, sin Zookeeper).
+* **Servicio de Notificaciones (Java):** Consume eventos para enviar notificaciones a los usuarios.
+* **Apache Kafka:** Actúa como el bus de mensajes del sistema.
 * **Seguridad:** Autenticación y autorización delegadas a **Auth0**.
 * **Frontend:** Interfaz de usuario final que se comunica a través del Gateway.
 
@@ -31,11 +32,12 @@ El sistema utiliza una arquitectura orientada a eventos (EDA) impulsada por **Ap
 
 ## Tecnologías Utilizadas
 
-* **Backend:** Java (Spring Boot), ASP.NET Core, Node.js/Express.
+* **Backend:** Java (Spring Boot) (Spring Web Flux), ASP.NET Core, Node.js/Express.
 * **Bases de Datos:** PostgreSQL 15, PostGIS (para el microservicio geográfico).
 * **Mensajería:** Apache Kafka (KRaft mode).
 * **Infraestructura:** Docker & Docker Compose.
-* **Seguridad:** Auth0.
+* **Seguridad:** Spring Security.
+* **Proveedor de identidad** Keycloak.
 
 <br>
 
@@ -50,6 +52,7 @@ El proyecto está dividido en los siguientes repositorios. Es necesario tenerlos
 * [Mascotas Service](https://github.com/Roony11-1/mascotas-service)
 * [Coincidencias Service](https://github.com/Roony11-1/coincidencias-service)
 * [Geolocalización Service](https://github.com/Roony11-1/geo-service)
+* [Notification Service](https://github.com/Roony11-1/notification-service)
 * [API Gateway](https://github.com/Roony11-1/sanos-gateway)
 * [Frontend](https://github.com/Roony11-1/sanos-salvos-front) 
 
@@ -76,7 +79,7 @@ Ejecuta el archivo clonador.bat que bajara todos los repositorios
 <br>
 
 ### Paso 2: Correr los contenedores en docker
-Con los repositorios clonados ve al directorio de "sanos-salvos-infrastructure" y ejectuta en vs-code los servicios desde el docker-compose.yml o con el comando docker compose up -d (PD: Kafka aun no esta siendo en uso)
+Con los repositorios clonados ve al directorio de "sanos-salvos-infrastructure" y ejectuta en vs-code los servicios desde el docker-compose.yml o con el comando docker compose up -d
 
 <br>
 
