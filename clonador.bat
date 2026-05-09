@@ -19,6 +19,7 @@ mascotas-service
 sanos-gateway
 sanos-salvos-front
 sanos-salvos-astro
+notification-service
 ) do (
 
     echo --------------------------------------------

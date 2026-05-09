@@ -90,6 +90,13 @@ services:
     container_name: coincidencias-service
     depends_on:
       - coincidencias-db
+
+  notification-service:
+    build:
+      context: ../notification-service
+    container_name: notification-service
+    ports:
+      - "8099:8099"
   geo-service:
     build:
       context: ../geo-service
@@ -108,6 +115,7 @@ services:
       - coincidencias-service
       - geo-service
       - mascotas-service
+      - notification-service
       - kafka-setup-reportes
       - kafka-setup-matches
       - kafka-ui
