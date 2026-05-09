@@ -96,7 +96,7 @@ services:
       context: ../notification-service
     container_name: notification-service
     ports:
-      - "8099:8099"
+      - "8082:8082"
   geo-service:
     build:
       context: ../geo-service
