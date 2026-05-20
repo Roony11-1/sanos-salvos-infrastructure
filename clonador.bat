@@ -20,6 +20,7 @@ sanos-gateway
 sanos-salvos-front
 sanos-salvos-astro
 notification-service
+message-service
 ) do (
 
     echo --------------------------------------------

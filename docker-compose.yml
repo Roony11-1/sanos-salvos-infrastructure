@@ -30,6 +30,16 @@ services:
       POSTGRES_PASSWORD: admin
     volumes:
       - geo-data:/var/lib/postgresql/data
+
+  message-db:
+    image: mongo:7
+    container_name: message-db
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: messages
+    volumes:
+      - message-data:/data/db
   
   zookeeper:
     image: confluentinc/cp-zookeeper:7.4.0
@@ -89,6 +99,15 @@ services:
     container_name: notification-service
     ports:
       - "8082:8082"
+
+  message-service:
+    build:
+      context: ../message-service
+    container_name: message-service
+    depends_on:
+      - message-db
+    ports:
+      - "8083:8080"
   geo-service:
     build:
       context: ../geo-service
@@ -159,3 +178,4 @@ volumes:
   mascotas-data:
   coincidencias-data:
   geo-data:
+  message-data:
