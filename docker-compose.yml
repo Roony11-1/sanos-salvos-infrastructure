@@ -106,8 +106,6 @@ services:
     container_name: message-service
     depends_on:
       - message-db
-    ports:
-      - "8083:8080"
   geo-service:
     build:
       context: ../geo-service
@@ -127,6 +125,7 @@ services:
       - geo-service
       - mascotas-service
       - notification-service
+      - message-service
       - kafka-setup
       - kafka-ui
       - keycloak
