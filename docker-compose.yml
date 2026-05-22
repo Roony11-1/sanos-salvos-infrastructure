@@ -40,6 +40,16 @@ services:
       MONGO_INITDB_DATABASE: messages
     volumes:
       - message-data:/data/db
+
+  users-db:
+    image: postgres:15
+    container_name: users-db
+    environment:
+      POSTGRES_DB: users
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: pass
+    volumes:
+      - users-data:/var/lib/postgresql/data
   
   zookeeper:
     image: confluentinc/cp-zookeeper:7.4.0
@@ -184,3 +194,4 @@ volumes:
   coincidencias-data:
   geo-data:
   message-data:
+  users-data:
