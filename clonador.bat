@@ -21,6 +21,7 @@ sanos-salvos-front
 sanos-salvos-astro
 notification-service
 message-service
+user-service
 ) do (
 
     echo --------------------------------------------
