@@ -112,6 +112,11 @@ services:
     container_name: geo-service
     depends_on:
       - geo-db
+
+  user-service:
+    build:
+      context: ../user-service
+    container_name: user-service
   gateway:
     build:
       context: ../sanos-gateway
@@ -126,6 +131,7 @@ services:
       - mascotas-service
       - notification-service
       - message-service
+      - user-service
       - kafka-setup
       - kafka-ui
       - keycloak
