@@ -1,15 +1,14 @@
 @echo off
+setlocal enabledelayedexpansion
+
 echo ============================================
 echo  SINCRONIZANDO MICROSERVICIOS SANOS Y SALVOS
 echo ============================================
 
-echo.
-echo [1/2] Moviendose al directorio padre...
 cd ..
-echo Directorio actual: %cd%
 
 echo.
-echo [2/2] Verificando repositorios...
+echo ===== RESUMEN =====
 echo.
 
 for %%r in (
@@ -25,20 +24,50 @@ user-service
 ) do (
 
     echo --------------------------------------------
-    echo Procesando: %%r
 
     if exist %%r (
-        echo Repositorio existente, actualizando...
+
+        echo Procesando: %%r
         cd %%r
-        git checkout main
-		git pull --rebase origin main
+
+        git checkout main >nul 2>&1
+
+        echo Actualizando...
+        git pull --rebase origin main > pull_result.txt
+
+        REM Obtener datos
+        for /f %%i in ('git branch --show-current') do set BRANCH=%%i
+        for /f %%i in ('git rev-parse --short HEAD') do set HASH=%%i
+        for /f "delims=" %%i in ('git log -1 --pretty^=format:"%%an"') do set AUTHOR=%%i
+        for /f "delims=" %%i in ('git log -1 --pretty^=format:"%%ad" --date^=short') do set DATE=%%i
+        for /f "delims=" %%i in ('git log -1 --pretty^=format:"%%s"') do set MESSAGE=%%i
+
+        findstr /c:"Already up to date" pull_result.txt >nul
+        if !errorlevel!==0 (
+            set STATUS=Sin cambios
+        ) else (
+            set STATUS=Actualizado
+        )
+
+        del pull_result.txt
+
+        echo Repo: %%r
+        echo Rama: !BRANCH!
+        echo Estado: !STATUS!
+        echo Ultimo commit: !HASH!
+        echo Autor: !AUTHOR!
+        echo Fecha: !DATE!
+        echo Mensaje: !MESSAGE!
+
         cd ..
+
     ) else (
-        echo No existe, clonando...
+
+        echo %%r no existe, clonando...
         git clone https://github.com/Roony11-1/%%r.git
+
     )
 
-    echo Finalizado: %%r
     echo --------------------------------------------
     echo.
 )
