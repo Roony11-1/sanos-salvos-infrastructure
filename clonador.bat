@@ -2,7 +2,7 @@
 setlocal enabledelayedexpansion
 
 echo ============================================
-echo  SINCRONIZANDO MICROSERVICIOS SANOS Y SALVOS
+echo   SINCRONIZANDO MICROSERVICIOS SANOS Y SALVOS
 echo ============================================
 
 cd ..
@@ -30,31 +30,38 @@ user-service
         echo Procesando: %%r
         cd %%r
 
+        REM Traer todo del remoto
+        git fetch origin >nul 2>&1
+
+        REM =========================
+        REM MAIN
+        REM =========================
         git checkout main >nul 2>&1
+        git pull origin main >nul 2>&1
 
-        echo Actualizando...
-        git pull --rebase origin main > pull_result.txt
+        REM =========================
+        REM DEVELOPMENT
+        REM =========================
+        git checkout development >nul 2>&1
 
-        REM Obtener datos
-        for /f %%i in ('git branch --show-current') do set BRANCH=%%i
-        for /f %%i in ('git rev-parse --short HEAD') do set HASH=%%i
-        for /f "delims=" %%i in ('git log -1 --pretty^=format:"%%an"') do set AUTHOR=%%i
-        for /f "delims=" %%i in ('git log -1 --pretty^=format:"%%ad" --date^=short') do set DATE=%%i
-        for /f "delims=" %%i in ('git log -1 --pretty^=format:"%%s"') do set MESSAGE=%%i
-
-        findstr /c:"Already up to date" pull_result.txt >nul
-        if !errorlevel!==0 (
-            set STATUS=Sin cambios
+        if errorlevel 1 (
+            echo Creando development desde origin...
+            git checkout -b development origin/development >nul 2>&1
         ) else (
-            set STATUS=Actualizado
+            git pull origin development >nul 2>&1
         )
 
-        del pull_result.txt
+        REM =========================
+        REM INFO ULTIMO COMMIT MAIN
+        REM =========================
+        for /f %%i in ('git rev-parse --short main') do set HASH=%%i
+        for /f "delims=" %%i in ('git log -1 main --pretty^=format:"%%an"') do set AUTHOR=%%i
+        for /f "delims=" %%i in ('git log -1 main --pretty^=format:"%%ad" --date^=short') do set DATE=%%i
+        for /f "delims=" %%i in ('git log -1 main --pretty^=format:"%%s"') do set MESSAGE=%%i
 
         echo Repo: %%r
-        echo Rama: !BRANCH!
-        echo Estado: !STATUS!
-        echo Ultimo commit: !HASH!
+        echo Rama activa: development
+        echo Ultimo commit main: !HASH!
         echo Autor: !AUTHOR!
         echo Fecha: !DATE!
         echo Mensaje: !MESSAGE!
