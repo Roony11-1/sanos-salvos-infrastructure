@@ -1,6 +1,6 @@
-# Git Workflow (Explicado)
+# 📌 Git Workflow del Proyecto
 
-Este documento explica cómo se organiza el flujo de trabajo con Git en este repositorio, usando ramas para mantener el código ordenado y estable.
+Este proyecto utiliza un flujo de trabajo basado en ramas para mantener el código ordenado, estable y escalable.
 
 ---
 
@@ -14,13 +14,22 @@ El proyecto se organiza en 3 tipos de ramas:
 
 ---
 
-## 🚀 Inicio del proyecto (crear development)
+## 🚀 Inicio del proyecto (desde un clone)
 
-Primero se crea la rama de desarrollo a partir de `main`.
+Cuando clonas el repositorio, normalmente estarás en `main`:
 
-```bash
-git checkout main
-git pull origin main
+git checkout -b development | Entra a la rama desarrollo
+git push -u origin development | Conecta la rama local con el repositorio remoto
 
-git checkout -b development | -b = "create branch + switch to it"
-git push -u origin development | “A partir de ahora, esta rama local development sigue a origin/development”
+Entonces los cambios van a la rama "development", donde se pueden hacer directo o puedes crear ramas
+por feature "feature/.."
+
+para ello haremos lo siguiente
+
+git checkout development
+git pull origin development
+
+git checkout -b feature/nombre-feature
+
+// Para mandar cambios o usa la interfaz de vsCode
+git push -u origin feature/nombre-feature
