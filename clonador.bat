@@ -30,41 +30,62 @@ user-service
         echo Procesando: %%r
         cd %%r
 
-        REM Traer todo del remoto
+        REM =========================================
+        REM FETCH
+        REM =========================================
         git fetch origin >nul 2>&1
 
-        REM =========================
+        REM =========================================
         REM MAIN
-        REM =========================
+        REM =========================================
         git checkout main >nul 2>&1
         git pull origin main >nul 2>&1
 
-        REM =========================
-        REM DEVELOPMENT
-        REM =========================
-        git checkout development >nul 2>&1
+        REM =========================================
+        REM DEV
+        REM =========================================
+
+        REM Intentar entrar a dev
+        git checkout dev >nul 2>&1
 
         if errorlevel 1 (
-            echo Creando development desde origin...
-            git checkout -b development origin/development >nul 2>&1
+
+            REM Si no existe dev local, intentar crearla desde origin/dev
+            git checkout -b dev origin/dev >nul 2>&1
+
+            if errorlevel 1 (
+
+                REM Si tampoco existe origin/dev, usar origin/development
+                git checkout -b dev origin/development >nul 2>&1
+
+            )
+
         ) else (
-            git pull origin development >nul 2>&1
+
+            git pull origin dev >nul 2>&1
+
         )
 
-        REM =========================
+        REM =========================================
         REM INFO ULTIMO COMMIT MAIN
-        REM =========================
+        REM =========================================
+
         for /f %%i in ('git rev-parse --short main') do set HASH=%%i
         for /f "delims=" %%i in ('git log -1 main --pretty^=format:"%%an"') do set AUTHOR=%%i
         for /f "delims=" %%i in ('git log -1 main --pretty^=format:"%%ad" --date^=short') do set DATE=%%i
         for /f "delims=" %%i in ('git log -1 main --pretty^=format:"%%s"') do set MESSAGE=%%i
 
         echo Repo: %%r
-        echo Rama activa: development
+        echo Rama activa final: main
         echo Ultimo commit main: !HASH!
         echo Autor: !AUTHOR!
         echo Fecha: !DATE!
         echo Mensaje: !MESSAGE!
+
+        REM =========================================
+        REM VOLVER A MAIN
+        REM =========================================
+        git checkout main >nul 2>&1
 
         cd ..
 

@@ -9,7 +9,7 @@ Este proyecto utiliza un flujo de trabajo basado en ramas para mantener el códi
 El proyecto se organiza en 3 tipos de ramas:
 
 - **main** → contiene la versión estable del proyecto (producción)
-- **development** → rama principal donde se integra todo el desarrollo
+- **dev** → rama principal donde se integra todo el desarrollo
 - **feature/*** → ramas temporales para desarrollar funcionalidades específicas
 
 ---
@@ -18,44 +18,44 @@ El proyecto se organiza en 3 tipos de ramas:
 
 Cuando clonas el repositorio, normalmente estarás en `main`:
 
-git checkout -b development | Entra a la rama desarrollo
-git push -u origin development | Conecta la rama local con el repositorio remoto
+git checkout -b dev | Entra a la rama desarrollo
+git push -u origin dev | Conecta la rama local con el repositorio remoto
 
-Entonces los cambios van a la rama "development", donde se pueden hacer directo o puedes crear ramas
+Entonces los cambios van a la rama "dev", donde se pueden hacer directo o puedes crear ramas
 por feature "feature/.."
 
 para ello haremos lo siguiente
 
-git checkout development
-git pull origin development
+git checkout dev
+git pull origin dev
 
 git checkout -b feature/nombre-feature
 
 // Para mandar cambios o usa la interfaz de vsCode y publica la rama
 git push -u origin feature/nombre-feature
 
-luego la pasamos a development
-git checkout development
+luego la pasamos a dev
+git checkout dev
 
 // Actualizamos por siacaso jiji
-git pull origin development
+git pull origin dev
 
 // Unimos la rama
 git merge feature/nombre-feature
 
 // subimos los cambios o lo hacemos por vsCode
-git push origin development
+git push origin dev
 
 // Borramos la rama feature
 git branch -d feature/nombre-feature
 git push origin --delete feature/nombre-feature
 
-// o hacelo directo en development
+// o hacelo directo en dev
 
 // para subir los cambios a main (OJO CODIGO FUNCIONANDO)
 git checkout main
 git pull origin main
-git merge development
+git merge dev
 git push origin main
 
 
