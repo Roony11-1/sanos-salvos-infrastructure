@@ -128,7 +128,7 @@ services:
       context: ../user-service
     container_name: user-service
     depends_on:
-      - user-db
+      - users-db
   gateway:
     build:
       context: ../sanos-gateway
