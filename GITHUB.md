@@ -31,5 +31,29 @@ git pull origin development
 
 git checkout -b feature/nombre-feature
 
-// Para mandar cambios o usa la interfaz de vsCode
+// Para mandar cambios o usa la interfaz de vsCode y publica la rama
 git push -u origin feature/nombre-feature
+
+luego la pasamos a development
+git checkout development
+
+// Actualizamos por siacaso jiji
+git pull origin development
+
+// Unimos la rama
+git merge feature/nombre-feature
+
+// subimos los cambios o lo hacemos por vsCode
+git push origin development
+
+// Borramos la rama feature
+git branch -d feature/nombre-feature
+git push origin --delete feature/nombre-feature
+
+// o hacelo directo en development
+
+// para subir los cambios a main (OJO CODIGO FUNCIONANDO)
+git checkout main
+git pull origin main
+git merge development
+git push origin main
