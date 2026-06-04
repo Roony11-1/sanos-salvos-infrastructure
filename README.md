@@ -58,7 +58,7 @@ El proyecto está dividido en los siguientes repositorios. Es necesario tenerlos
 * [Geolocalización Service](https://github.com/Roony11-1/geo-service)
 * [Notification Service](https://github.com/Roony11-1/notification-service)
 * [Message Service](https://github.com/Roony11-1/message-service)
-* [User Service](htts://github.com/Roony11-1/user-service)
+* [User Service](https://github.com/Roony11-1/user-service)
 * [API Gateway](https://github.com/Roony11-1/sanos-gateway)
 * [Frontend](https://github.com/Roony11-1/sanos-salvos-front) 
 * [Landing](https://github.com/Roony11-1/sanos-salvos-astro)
