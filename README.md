@@ -16,6 +16,7 @@ El sistema utiliza una arquitectura orientada a eventos (EDA) impulsada por **Ap
 
 ### Componentes Principales:
 
+<<<<<<< HEAD
 * **Servicio de Mascotas (ASP.NET 10 Core):** Encargado de la gestión y registro de los animales. Publica eventos (Producer) como "Animal registrado como perdido" en Kafka. Utiliza una base de datos **PostgreSQL**.
 * **Servicio de Coincidencias (Java Spring):** Consume eventos de Kafka para analizar y marcar coincidencias entre mascotas perdidas y encontradas. Tiene su propia base de datos **PostgreSQL**.
 * **Servicio de Geolocalización (Java Spring):** Consume eventos para gestionar las ubicaciones geográficas de los avistamientos y pérdidas. Utiliza **PostGIS** para el manejo avanzado de datos espaciales.
@@ -26,6 +27,19 @@ El sistema utiliza una arquitectura orientada a eventos (EDA) impulsada por **Ap
 * **Seguridad (Keycloak):** Autenticación y autorización delegadas.
 * **Frontend (React):** Interfaz de usuario final que se comunica a través del Gateway.
 * **Landing (Astro):** Landing de la web
+=======
+* **Servicio de Mascotas (C# ASP.NET):** Encargado de la gestión y registro de los animales. Publica eventos (Producer) como "Animal registrado como perdido" en Kafka. Utiliza una base de datos **PostgreSQL**.
+* **Servicio de Coincidencias (Java Spring):** Consume eventos de Kafka para analizar y marcar coincidencias entre mascotas perdidas y encontradas. Tiene su propia base de datos **PostgreSQL**.
+* **Servicio de Geolocalización (Java Spring):** Consume eventos para gestionar las ubicaciones geográficas de los avistamientos y pérdidas. Utiliza **PostGIS** para el manejo avanzado de datos espaciales. *NO REALIZADO*
+* **Servicio de Notificaciones (Java Spring WebFlux):** Consume eventos para enviar notificaciones a los usuarios.
+* **Servicio de Mensajeria (Java Quarkus):** Centraliza las operaciones en los mensajes.
+* **Servicio de Usuarios (C++ Drogon):** BFF de keycloak, además encargado de persistir metadatos extra de los usuarios.
+* **Servicio de Api Gateway (Java Spring Cloud MVC):** El punto de entrada hacía el Backend.
+* **Apache Kafka:**Es el bus de mensajes del sistema.
+* **Seguridad:** Autenticación y autorización delegadas a **Keycloak** propio.
+* **Frontend (React & Astro):** Interfaz de usuario final que se comunica a través del Gateway.
+* **Aplicación Móvil (Flutter):** Cliente móvil de la aplicación 
+>>>>>>> 4e27581f8c895abfed83185c84d7993b9a8fa895
 
 <br>
 
