@@ -16,13 +16,16 @@ El sistema utiliza una arquitectura orientada a eventos (EDA) impulsada por **Ap
 
 ### Componentes Principales:
 
-* **Servicio de Mascotas (ASP.NET):** Encargado de la gestión y registro de los animales. Publica eventos (Producer) como "Animal registrado como perdido" en Kafka. Utiliza una base de datos **PostgreSQL**.
-* **Servicio de Coincidencias (Java):** Consume eventos de Kafka para analizar y marcar coincidencias entre mascotas perdidas y encontradas. Tiene su propia base de datos **PostgreSQL**.
-* **Servicio de Geolocalización (Java):** Consume eventos para gestionar las ubicaciones geográficas de los avistamientos y pérdidas. Utiliza **PostGIS** para el manejo avanzado de datos espaciales.
-* **Servicio de Notificaciones (Java):** Consume eventos para enviar notificaciones a los usuarios.
+* **Servicio de Mascotas (ASP.NET 10 Core):** Encargado de la gestión y registro de los animales. Publica eventos (Producer) como "Animal registrado como perdido" en Kafka. Utiliza una base de datos **PostgreSQL**.
+* **Servicio de Coincidencias (Java Spring):** Consume eventos de Kafka para analizar y marcar coincidencias entre mascotas perdidas y encontradas. Tiene su propia base de datos **PostgreSQL**.
+* **Servicio de Geolocalización (Java Spring):** Consume eventos para gestionar las ubicaciones geográficas de los avistamientos y pérdidas. Utiliza **PostGIS** para el manejo avanzado de datos espaciales.
+* **Servicio de Notificaciones (Java WebFlux):** Consume eventos para enviar notificaciones a los usuarios.
+* **Servicio de Mensajeria (Java Quarkus):** Encargado del sistema de mensajeria entre usuarios
+* **Servicio de usuarios (C++ Drogon):** Encargado de enmascarar llamadas de registro a keycloak
 * **Apache Kafka:** Actúa como el bus de mensajes del sistema.
-* **Seguridad:** Autenticación y autorización delegadas a **Auth0**.
-* **Frontend:** Interfaz de usuario final que se comunica a través del Gateway.
+* **Seguridad (Keycloak):** Autenticación y autorización delegadas.
+* **Frontend (React):** Interfaz de usuario final que se comunica a través del Gateway.
+* **Landing (Astro):** Landing de la web
 
 <br>
 
@@ -32,9 +35,9 @@ El sistema utiliza una arquitectura orientada a eventos (EDA) impulsada por **Ap
 
 ## Tecnologías Utilizadas
 
-* **Backend:** Java (Spring Boot) (Spring Web Flux), ASP.NET Core, Node.js/Express.
-* **Bases de Datos:** PostgreSQL 15, PostGIS (para el microservicio geográfico).
-* **Mensajería:** Apache Kafka (KRaft mode).
+* **Backend:** Java (Spring Boot) (Spring Web Flux) (Quarkus), ASP.NET 10 Core, C++ (Drogon)
+* **Bases de Datos:** PostgreSQL 15, PostGIS (para el microservicio geográfico), MongoDB.
+* **Mensajería:** Apache Kafka, Zookeeper.
 * **Infraestructura:** Docker & Docker Compose.
 * **Seguridad:** Spring Security.
 * **Proveedor de identidad** Keycloak.
@@ -53,9 +56,11 @@ El proyecto está dividido en los siguientes repositorios. Es necesario tenerlos
 * [Coincidencias Service](https://github.com/Roony11-1/coincidencias-service)
 * [Geolocalización Service](https://github.com/Roony11-1/geo-service)
 * [Notification Service](https://github.com/Roony11-1/notification-service)
+* [Messages Service](https://github.com/Roony11-1/message-service)
+* [Users Service](https://github.com/Roony11-1/user-service)
 * [API Gateway](https://github.com/Roony11-1/sanos-gateway)
-* [Frontend](https://github.com/Roony11-1/sanos-salvos-front) 
-
+* [Frontend](https://github.com/Roony11-1/sanos-salvos-front)
+* [Landing Page](https://github.com/Roony11-1/sanos-salvos-astro)
 <br>
 
 ---
