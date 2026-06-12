@@ -1,4 +1,4 @@
-# Todos los servicios comparten la url
+# Todos los servicios comparten la url.
 
 /api/{nombre-del-servicio}
 
