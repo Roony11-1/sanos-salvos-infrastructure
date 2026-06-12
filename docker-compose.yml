@@ -21,15 +21,6 @@ services:
       - "5430:5432"
     volumes:
       - coincidencias-data:/var/lib/postgresql/data
-  geo-db:
-    image: postgis/postgis:15-3.4
-    container_name: geo-db
-    environment:
-      POSTGRES_DB: geo
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: admin
-    volumes:
-      - geo-data:/var/lib/postgresql/data
 
   message-db:
     image: mongo:7
@@ -116,13 +107,6 @@ services:
     container_name: message-service
     depends_on:
       - message-db
-  geo-service:
-    build:
-      context: ../geo-service
-    container_name: geo-service
-    depends_on:
-      - geo-db
-
   user-service:
     build:
       context: ../user-service
@@ -139,7 +123,6 @@ services:
       - JAVA_TOOL_OPTIONS=-Djava.net.preferIPv4Stack=true -Dnetworkaddress.cache.ttl=0 -Dnetworkaddress.cache.negative.ttl=0
     depends_on:
       - coincidencias-service
-      - geo-service
       - mascotas-service
       - notification-service
       - message-service
@@ -194,6 +177,5 @@ networks:
 volumes:
   mascotas-data:
   coincidencias-data:
-  geo-data:
   message-data:
   users-data:
