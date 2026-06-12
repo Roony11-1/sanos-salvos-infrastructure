@@ -9,7 +9,6 @@ cd ..
 
 for %%r in (
 coincidencias-service
-geo-service
 mascotas-service
 sanos-gateway
 sanos-salvos-front
