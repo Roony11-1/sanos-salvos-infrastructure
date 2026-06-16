@@ -113,6 +113,8 @@ services:
     container_name: user-service
     depends_on:
       - users-db
+    environment:
+      RUN_TESTS: "true"
   gateway:
     build:
       context: ../sanos-gateway
