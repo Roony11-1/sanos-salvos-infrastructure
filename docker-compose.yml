@@ -71,16 +71,6 @@ services:
       - ./kafka/init-topics.sh:/init-topics.sh
     command: bash /init-topics.sh
 
-  kafka-ui:
-    image: provectuslabs/kafka-ui:latest
-    container_name: kafka-ui
-    depends_on:
-      - kafka
-    ports:
-      - "8090:8080"
-    environment:
-      KAFKA_CLUSTERS_0_NAME: sanos-salvos
-      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
   mascotas-service:
     build:
       context: ../mascotas-service
@@ -90,9 +80,17 @@ services:
   coincidencias-service:
     build:
       context: ../coincidencias-service
+      args:
+        RUN_TESTS: "true"
+        GENERATE_COVERAGE: "true"
     container_name: coincidencias-service
     depends_on:
       - coincidencias-db
+    environment:
+      RUN_TESTS: "true"
+      GENERATE_COVERAGE: "true"
+    ports:
+      - "8090:8090"
 
   notification-service:
     build:
@@ -115,6 +113,8 @@ services:
       - users-db
     environment:
       RUN_TESTS: "true"
+      GENERATE_COVERAGE: "true"
+
   gateway:
     build:
       context: ../sanos-gateway
@@ -130,7 +130,6 @@ services:
       - message-service
       - user-service
       - kafka-setup
-      - kafka-ui
       - keycloak
 
   frontend:
