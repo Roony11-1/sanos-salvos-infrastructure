@@ -111,6 +111,7 @@ services:
     container_name: user-service
     depends_on:
       - users-db
+      - keycloak
     environment:
       RUN_TESTS: "true"
       GENERATE_COVERAGE: "true"
