@@ -1,70 +1,72 @@
 services:
   mascotas-db:
-    image: postgres:15
+    image: ${POSTGRES_VERSION:-postgres:15}
     container_name: mascotas-db
     environment:
-      POSTGRES_DB: mascotas
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: pass
+      POSTGRES_DB: ${MASCOTAS_DB_NAME:-mascotas}
+      POSTGRES_USER: ${MASCOTAS_DB_USER:-user}
+      POSTGRES_PASSWORD: ${MASCOTAS_DB_PASS:-pass}
     ports:
-      - "5431:5432"
+      - "${MASCOTAS_DB_HOST_PORT:-5431}:${MASCOTAS_DB_INTERNAL_PORT:-5432}"
     volumes:
       - mascotas-data:/var/lib/postgresql/data
+
   coincidencias-db:
-    image: postgres:15
+    image: ${POSTGRES_VERSION:-postgres:15}
     container_name: coincidencias-db
     environment:
-      POSTGRES_DB: coincidencias
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: ${COINCIDENCIAS_DB_NAME:-coincidencias}
+      POSTGRES_USER: ${COINCIDENCIAS_DB_USER:-admin}
+      POSTGRES_PASSWORD: ${COINCIDENCIAS_DB_PASS:-admin}
     ports:
-      - "5430:5432"
+      - "${COINCIDENCIAS_DB_HOST_PORT:-5430}:${COINCIDENCIAS_DB_INTERNAL_PORT:-5432}"
     volumes:
       - coincidencias-data:/var/lib/postgresql/data
 
   message-db:
-    image: mongo:7
+    image: ${MONGO_VERSION:-mongo:7}
     container_name: message-db
     ports:
-      - "27017:27017"
+      - "${MESSAGE_DB_HOST_PORT:-27017}:${MESSAGE_DB_INTERNAL_PORT:-27017}"
     environment:
-      MONGO_INITDB_DATABASE: messages
+      MONGO_INITDB_DATABASE: ${MESSAGE_DB_NAME:-messages}
     volumes:
       - message-data:/data/db
 
   users-db:
-    image: postgres:15
+    image: ${POSTGRES_VERSION:-postgres:15}
     container_name: users-db
     environment:
-      POSTGRES_DB: users
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: pass
+      POSTGRES_DB: ${USERS_DB_NAME:-users}
+      POSTGRES_USER: ${USERS_DB_USER:-user}
+      POSTGRES_PASSWORD: ${USERS_DB_PASS:-pass}
     volumes:
       - users-data:/var/lib/postgresql/data
-  
+
   zookeeper:
-    image: confluentinc/cp-zookeeper:7.4.0
+    image: ${ZOOKEEPER_VERSION:-confluentinc/cp-zookeeper:7.4.0}
     container_name: zookeeper
     environment:
-      ZOOKEEPER_CLIENT_PORT: 2181
-      ZOOKEEPER_TICK_TIME: 2000
+      ZOOKEEPER_CLIENT_PORT: ${ZOOKEEPER_CLIENT_PORT:-2181}
+      ZOOKEEPER_TICK_TIME: ${ZOOKEEPER_TICK_TIME:-2000}
 
   kafka:
-    image: confluentinc/cp-kafka:7.4.0
+    image: ${KAFKA_VERSION:-confluentinc/cp-kafka:7.4.0}
     container_name: kafka
     depends_on:
       - zookeeper
     ports:
-      - "9092:9092"
+      - "${KAFKA_HOST_PORT:-9092}:${KAFKA_INTERNAL_PORT:-9092}"
     volumes:
       - ./kafka/server.properties:/etc/kafka/server.properties
     command: >
       bash -c "
         kafka-server-start /etc/kafka/server.properties
       "
-      
+
   kafka-setup:
-    image: confluentinc/cp-kafka:7.4.0
+    image: ${KAFKA_VERSION:-confluentinc/cp-kafka:7.4.0}
+    container_name: kafka-setup
     depends_on:
       - kafka
     volumes:
@@ -74,56 +76,107 @@ services:
   mascotas-service:
     build:
       context: ../mascotas-service
+      args:
+        RUN_TESTS: "${RUN_TESTS:-false}"
+        GENERATE_COVERAGE: "${GENERATE_COVERAGE:-false}"
     container_name: mascotas-service
     depends_on:
       - mascotas-db
+    environment:
+      ConnectionStrings__DefaultConnection: "Host=mascotas-db;Port=${MASCOTAS_DB_INTERNAL_PORT:-5432};Database=${MASCOTAS_DB_NAME:-mascotas};Username=${MASCOTAS_DB_USER:-user};Password=${MASCOTAS_DB_PASS:-pass}"
+      Kafka__BootstrapServers: "kafka:${KAFKA_INTERNAL_PORT:-9092}"
+      Kafka__GroupId: "${KAFKA_CONSUMER_GROUP_MASCOTAS:-mascotas-service}"
+      Kafka__MatchesTopic: "${KAFKA_MATCHES_TOPIC:-matches-detectados}"
+
   coincidencias-service:
     build:
       context: ../coincidencias-service
       args:
-        RUN_TESTS: "true"
-        GENERATE_COVERAGE: "true"
+        RUN_TESTS: "${RUN_TESTS:-false}"
+        GENERATE_COVERAGE: "${GENERATE_COVERAGE:-false}"
     container_name: coincidencias-service
     depends_on:
       - coincidencias-db
-    environment:
-      RUN_TESTS: "true"
-      GENERATE_COVERAGE: "true"
     ports:
-      - "8090:8090"
+      - "${COINCIDENCIAS_HOST_PORT:-8090}:${COINCIDENCIAS_SERVICE_PORT:-8000}"
+    environment:
+      SERVER_PORT: "${COINCIDENCIAS_SERVICE_PORT:-8000}"
+      KAFKA_BOOTSTRAP_SERVERS: "kafka:${KAFKA_INTERNAL_PORT:-9092}"
+      KAFKA_CONSUMER_GROUP: "${KAFKA_CONSUMER_GROUP_COINCIDENCIAS:-coincidencias-group}"
 
   notification-service:
     build:
       context: ../notification-service
+      args:
+        RUN_TESTS: "${RUN_TESTS:-false}"
+        GENERATE_COVERAGE: "${GENERATE_COVERAGE:-false}"
     container_name: notification-service
     ports:
-      - "8082:8082"
+      - "${NOTIFICATION_HOST_PORT:-8082}:${NOTIFICATION_SERVICE_PORT:-8082}"
+    environment:
+      SERVER_PORT: "${NOTIFICATION_SERVICE_PORT:-8082}"
+      KAFKA_BOOTSTRAP_SERVERS: "kafka:${KAFKA_INTERNAL_PORT:-9092}"
+      KAFKA_CONSUMER_GROUP: "${KAFKA_CONSUMER_GROUP_NOTIFICATION:-notification-group}"
 
   message-service:
     build:
       context: ../message-service
+      args:
+        RUN_TESTS: "${RUN_TESTS:-false}"
+        GENERATE_COVERAGE: "${GENERATE_COVERAGE:-false}"
     container_name: message-service
     depends_on:
       - message-db
+    environment:
+      SERVER_PORT: "${MESSAGE_SERVICE_PORT:-8080}"
+      MONGODB_CONNECTION_STRING: "mongodb://message-db:${MESSAGE_DB_INTERNAL_PORT:-27017}"
+      MESSAGE_DB_NAME: "${MESSAGE_DB_NAME:-messages}"
+      JWT_ISSUER_URI: "http://keycloak:${KEYCLOAK_INTERNAL_PORT:-8080}/realms/${KEYCLOAK_REALM:-reino-neytan}"
+      JWKS_URI: "http://keycloak:${KEYCLOAK_INTERNAL_PORT:-8080}/realms/${KEYCLOAK_REALM:-reino-neytan}/protocol/openid-connect/certs"
+
   user-service:
     build:
       context: ../user-service
+      args:
+        RUN_TESTS: "${RUN_TESTS:-false}"
+        GENERATE_COVERAGE: "${GENERATE_COVERAGE:-false}"
     container_name: user-service
     depends_on:
       - users-db
       - keycloak
     environment:
-      RUN_TESTS: "true"
-      GENERATE_COVERAGE: "true"
+      RUN_TESTS: "${RUN_TESTS:-false}"
+      GENERATE_COVERAGE: "${GENERATE_COVERAGE:-false}"
+      KEYCLOAK_ADMIN_API: "http://keycloak:${KEYCLOAK_INTERNAL_PORT:-8080}/admin/realms/${KEYCLOAK_REALM:-reino-neytan}"
+      KEYCLOAK_TOKEN_URL: "http://keycloak:${KEYCLOAK_INTERNAL_PORT:-8080}/realms/${KEYCLOAK_REALM:-reino-neytan}/protocol/openid-connect/token"
+      KC_CLIENT_ID_BACKEND: "${KC_CLIENT_ID_BACKEND:-sanos-backend}"
+      KC_CLIENT_SECRET_BACKEND: "${KC_CLIENT_SECRET_BACKEND:-odioconmialmajavascript1234}"
+      KC_CLIENT_ID_LOGIN: "${KC_CLIENT_ID_LOGIN:-sanos-login}"
+      KC_CLIENT_SECRET_LOGIN: "${KC_CLIENT_SECRET_LOGIN:-odioconmialmajavascript1234}"
+      USERS_DB_HOST: "users-db"
+      USERS_DB_PORT: "${USERS_DB_INTERNAL_PORT:-5432}"
+      USERS_DB_NAME: "${USERS_DB_NAME:-users}"
+      USERS_DB_USER: "${USERS_DB_USER:-user}"
+      USERS_DB_PASS: "${USERS_DB_PASS:-pass}"
+      USER_SERVICE_PORT: "${USER_SERVICE_PORT:-8090}"
 
   gateway:
     build:
       context: ../sanos-gateway
+      args:
+        RUN_TESTS: "${RUN_TESTS:-false}"
+        GENERATE_COVERAGE: "${GENERATE_COVERAGE:-false}"
     container_name: sanos-gateway
     ports:
-      - "8080:8080"
+      - "${GATEWAY_HOST_PORT:-8080}:${GATEWAY_PORT:-8080}"
     environment:
-      - JAVA_TOOL_OPTIONS=-Djava.net.preferIPv4Stack=true -Dnetworkaddress.cache.ttl=0 -Dnetworkaddress.cache.negative.ttl=0
+      SERVER_PORT: "${GATEWAY_PORT:-8080}"
+      JWT_ISSUER_URI: "http://keycloak:${KEYCLOAK_INTERNAL_PORT:-8080}/realms/${KEYCLOAK_REALM:-reino-neytan}"
+      KC_CLIENT_ID_BACKEND: "${KC_CLIENT_ID_BACKEND:-sanos-backend}"
+      KC_CLIENT_SECRET_BACKEND: "${KC_CLIENT_SECRET_BACKEND:-odioconmialmajavascript1234}"
+      KEYCLOAK_TOKEN_URL: "http://keycloak:${KEYCLOAK_INTERNAL_PORT:-8080}/realms/${KEYCLOAK_REALM:-reino-neytan}/protocol/openid-connect/token"
+      KEYCLOAK_ADMIN_API: "http://keycloak:${KEYCLOAK_INTERNAL_PORT:-8080}/realms/${KEYCLOAK_REALM:-reino-neytan}"
+      JAVA_TOOL_OPTIONS: "-Djava.net.preferIPv4Stack=true -Dnetworkaddress.cache.ttl=0 -Dnetworkaddress.cache.negative.ttl=0"
     depends_on:
       - coincidencias-service
       - mascotas-service
@@ -134,39 +187,40 @@ services:
       - keycloak
 
   frontend:
-      build: ../sanos-salvos-front
-      container_name: frontend
-      ports:
-        - "80:80"
-      volumes:
-        - ./proxy-web/nginx-custom.conf:/etc/nginx/conf.d/default.conf
-      depends_on:
-        - gateway
-        - astro
-      networks:
-        - default
+    build:
+      context: ../sanos-salvos-front
+      args:
+        RUN_TESTS: "${RUN_TESTS:-false}"
+        GENERATE_COVERAGE: "${GENERATE_COVERAGE:-false}"
+        VITE_API_GATEWAY_URL: "http://localhost:${GATEWAY_HOST_PORT:-8080}"
+    container_name: frontend
+    ports:
+      - "${FRONTEND_HOST_PORT:-80}:${FRONTEND_PORT:-80}"
+    volumes:
+      - ./proxy-web/nginx-custom.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - gateway
+      - astro
+    networks:
+      - default
 
   astro:
-      build: ../sanos-salvos-astro
-      container_name: astro-landing
-      expose:
-        - "80"
-      # ports:
-      #   - "3000:80"
-      networks:
-        - default
+    build: ../sanos-salvos-astro
+    container_name: astro-landing
+    expose:
+      - "${ASTRO_PORT:-80}"
+    networks:
+      - default
 
   keycloak:
-    image: quay.io/keycloak/keycloak:25.0.6
+    image: ${KEYCLOAK_VERSION:-quay.io/keycloak/keycloak:25.0.6}
     container_name: keycloak
     command: start-dev --import-realm
     environment:
-      KEYCLOAK_ADMIN: admin
-      KEYCLOAK_ADMIN_PASSWORD: admin
+      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN:-admin}
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:-admin}
       KC_HOSTNAME_STRICT: "false"
       KC_HTTP_ENABLED: "true"
-  # ports:
-  #   - "8081:8080"
     volumes:
       - ./keycloak/realm.json:/opt/keycloak/data/import/realm.json
     networks:
@@ -209,7 +263,7 @@ services:
 
 networks:
   default:
-    name: sanos-salvos-network
+    name: ${NETWORK_NAME:-sanos-salvos-network}
 
 volumes:
   mascotas-data:
