@@ -256,6 +256,7 @@ services:
     container_name: jmeter
     tty: true
     stdin_open: true
+    entrypoint: ["/bin/sh", "-c", "tail -f /dev/null"]
     volumes:
       - ./jmeter:/tests
     depends_on:
