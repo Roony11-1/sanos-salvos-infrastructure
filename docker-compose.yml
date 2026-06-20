@@ -82,6 +82,8 @@ services:
     container_name: mascotas-service
     depends_on:
       - mascotas-db
+    volumes:
+      - mascotas-uploads:/app/wwwroot/uploads
     environment:
       ConnectionStrings__DefaultConnection: "${MASCOTAS_CONNECTION_STRING:-Host=mascotas-db;Port=5432;Database=mascotas;Username=user;Password=pass}"
       Kafka__BootstrapServers: "${KAFKA_BOOTSTRAP_SERVERS:-kafka:9092}"
@@ -150,6 +152,8 @@ services:
     depends_on:
       - users-db
       - keycloak
+    volumes:
+      - users-uploads:/app/uploads/profiles
     environment:
       RUN_TESTS: "${RUN_TESTS:-false}"
       GENERATE_COVERAGE: "${GENERATE_COVERAGE:-false}"
@@ -274,9 +278,11 @@ networks:
 
 volumes:
   mascotas-data:
+  mascotas-uploads:
   coincidencias-data:
   message-data:
   users-data:
+  users-uploads:
 
 
   sonarqube-db-data:
