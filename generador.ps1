@@ -113,26 +113,6 @@ foreach ($u in $Users) {
 if ($TokenCache.Count -eq 0) { Log "No hay usuarios. Abortando."; exit 1 }
 $AllUsers = $TokenCache.Keys | Where-Object { $_ }
 
-# fotos de perfil
-
-Log "`n--- Subiendo fotos de perfil ---"
-foreach ($uname in $AllUsers) {
-    $token = $TokenCache[$uname]
-    $img = Get-RandomImage
-    if (-not $img) {
-        Log "  [SKIP] $uname -- no hay imagenes disponibles"
-        continue
-    }
-    $fields = @{}
-    $fileFields = @(@{ Name = "file"; Path = $img.FullName })
-    $resp = Send-MultiPart "$GatewayUrl/api/users/v1/users/foto" $fields $token $fileFields
-    if ($resp -and $resp.profilePictureUrl) {
-        Log "  OK $uname -> foto de perfil subida ($($resp.profilePictureUrl))"
-    } else {
-        Log "  [WARN] $uname -> fallo al subir foto de perfil"
-    }
-}
-
 # mascotas
 
 $Animals = @("Perro", "Gato")
