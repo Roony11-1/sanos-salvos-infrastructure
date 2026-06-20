@@ -104,3 +104,6 @@ Con los repositorios clonados ve al directorio de "sanos-salvos-infrastructure" 
 
 ### Paso 3: El contenido desplegado
 El sistema usa un gateway en el puerto 8080, el resto esta privado de la red local, y la pagina web esta en el puerto 80
+
+## Para probar sonarqube para cualquier microservicio Maven Primero runnear las pruebas del microservicio y despues hacer esto:.
+.\mvnw.cmd sonar:sonar "-Dsonar.projectKey=message-service" "-Dsonar.host.url=http://localhost:9000" "-Dsonar.login=sqp_32876bd725f1eb79ef70224758f42a09e93a2ff4"
