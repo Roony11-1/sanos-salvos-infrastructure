@@ -133,6 +133,7 @@ services:
       MESSAGE_DB_NAME: "${MESSAGE_DB_NAME:-messages}"
       JWT_ISSUER_URI: "http://keycloak:${KEYCLOAK_INTERNAL_PORT:-8080}/realms/${KEYCLOAK_REALM:-reino-neytan}"
       JWKS_URI: "http://keycloak:${KEYCLOAK_INTERNAL_PORT:-8080}/realms/${KEYCLOAK_REALM:-reino-neytan}/protocol/openid-connect/certs"
+      KAFKA_BOOTSTRAP_SERVERS: "kafka:${KAFKA_INTERNAL_PORT:-9092}"
 
   user-service:
     build:
