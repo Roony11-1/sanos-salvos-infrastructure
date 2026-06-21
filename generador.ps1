@@ -156,8 +156,26 @@ foreach ($uname in $AllUsers) {
 
 # reportes perdida
 
-$Ciudades = @("Santiago", "Valparaiso", "Concepcion", "Vina del Mar", "La Serena")
-$Comunas  = @("Providencia", "Las Condes", "Nunoa", "Vitacura", "Maipu")
+Log "`n--- Cargando ubicaciones desde API ---"
+$Ubicaciones = @()  # cada elemento: @{ region; ciudad; comunas[] }
+try {
+    $raw = Invoke-RestMethod -Uri "$GatewayUrl/api/mascotas/v1/Ubicacion/comunas" -Method Get
+    foreach ($g in $raw) {
+        $Ubicaciones += @{ region = $g.region; ciudad = $g.ciudad; comunas = @($g.comunas) }
+    }
+    Log "  OK $($Ubicaciones.Count) grupos de ubicacion cargados"
+} catch {
+    Log "  [WARN] No se pudo obtener ubicaciones de la API, usando defaults"
+    $Ubicaciones = @(
+        @{ region = "Metropolitana"; ciudad = "Santiago";   comunas = @("Providencia", "Las Condes", "Nunoa", "Vitacura", "Maipu") }
+    )
+}
+
+function Get-RandomUbicacion {
+    $grupo = $Ubicaciones | Get-Random
+    $comuna = $grupo.comunas | Get-Random
+    return @{ Region = $grupo.region; Ciudad = $grupo.ciudad; Comuna = $comuna }
+}
 
 Log "`n--- Creando reportes de perdida ---"
 foreach ($uname in $AllUsers) {
@@ -167,17 +185,19 @@ foreach ($uname in $AllUsers) {
     $count = [Math]::Min((Get-Random -Min 1 -Max 3), $ids.Count)
     for ($i = 0; $i -lt $count; $i++) {
         $mid = $ids | Get-Random
+        $ubic = Get-RandomUbicacion
         $fields = [ordered]@{
             MascotaId   = "$mid"
             Descripcion = "Se perdio en la tarde, responde al nombre. Cualquier info contactar."
-            Ciudad      = $Ciudades | Get-Random
-            Comuna      = $Comunas | Get-Random
+            Region      = $ubic.Region
+            Ciudad      = $ubic.Ciudad
+            Comuna      = $ubic.Comuna
         }
         $img = Get-RandomImage
         $fileFields = if ($img) { @(@{ Name = "Imagenes"; Path = $img.FullName }) } else { $null }
         $resp = Send-MultiPart "$GatewayUrl/api/mascotas/v1/Reporte/perdida" $fields $token $fileFields
         if ($resp -and $resp.id) {
-            Log "  OK $uname -> perdida mascota $mid (reporte $($resp.id))"
+            Log "  OK $uname -> perdida mascota $mid en $($ubic.Comuna), $($ubic.Ciudad) (reporte $($resp.id))"
         } else {
             Log "  [ERR] $uname -> perdida fallo"
         }
@@ -192,6 +212,7 @@ foreach ($uname in $AllUsers) {
     $count = Get-Random -Min 1 -Max 3
     for ($i = 0; $i -lt $count; $i++) {
         $obsName = $MascotaNames | Get-Random
+        $ubic = Get-RandomUbicacion
         $fields = [ordered]@{
             "MascotaObservada.Nombre"     = $obsName
             "MascotaObservada.NumeroChip" = if ((Get-Random -Max 2) -eq 0) { "" } else { "CHIP$([Guid]::NewGuid().ToString('N').Substring(0,8).ToUpper())" }
@@ -199,14 +220,15 @@ foreach ($uname in $AllUsers) {
             "MascotaObservada.TipoRaza"   = $Breeds | Get-Random
             "MascotaObservada.Color"      = $Colors | Get-Random
             Descripcion                   = "Vi un $($obsName) que parece perdido cerca de la plaza."
-            Ciudad                        = $Ciudades | Get-Random
-            Comuna                        = $Comunas | Get-Random
+            Region                        = $ubic.Region
+            Ciudad                        = $ubic.Ciudad
+            Comuna                        = $ubic.Comuna
         }
         $img = Get-RandomImage
         $fileFields = if ($img) { @(@{ Name = "Imagenes"; Path = $img.FullName }) } else { $null }
         $resp = Send-MultiPart "$GatewayUrl/api/mascotas/v1/Reporte/avistamiento" $fields $token $fileFields
         if ($resp -and $resp.id) {
-            Log "  OK $uname -> avistamiento '$obsName' (reporte $($resp.id))"
+            Log "  OK $uname -> avistamiento '$obsName' en $($ubic.Comuna), $($ubic.Ciudad) (reporte $($resp.id))"
         } else {
             Log "  [ERR] $uname -> avistamiento fallo"
         }
