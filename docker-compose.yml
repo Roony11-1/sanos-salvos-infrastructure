@@ -256,7 +256,14 @@ services:
       SONAR_JDBC_USERNAME: sonar
       SONAR_JDBC_PASSWORD: sonar
     depends_on:
-      - sonarqube-db
+      sonarqube-db:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://localhost:9000/api/system/status"]
+      interval: 15s
+      timeout: 10s
+      retries: 15
+      start_period: 60s
     volumes:
       - sonarqube-data:/opt/sonarqube/data
       - sonarqube-logs:/opt/sonarqube/logs
@@ -271,6 +278,29 @@ services:
       - ./jmeter:/tests
     depends_on:
       - gateway
+
+  test-runner:
+    build:
+      context: ..
+      dockerfile: tests/Dockerfile
+    container_name: test-runner
+    profiles:
+      - test
+    volumes:
+      - ../sanos-gateway:/app/sanos-gateway
+      - ../coincidencias-service:/app/coincidencias-service
+      - ../notification-service:/app/notification-service
+      - ../message-service:/app/message-service
+      - ../mascotas-service:/app/mascotas-service
+      - ../user-service:/app/user-service
+      - ../sanos-salvos-front:/app/sanos-salvos-front
+      - coverage-data:/coverage
+    depends_on:
+      sonarqube:
+        condition: service_healthy
+    environment:
+      SONAR_HOST_URL: http://sonarqube:9000
+      SONAR_TOKEN: sqp_32876bd725f1eb79ef70224758f42a09e93a2ff4
 
 networks:
   default:
@@ -289,3 +319,5 @@ volumes:
   sonarqube-data:
   sonarqube-logs:
   sonarqube-extensions:
+
+  coverage-data:

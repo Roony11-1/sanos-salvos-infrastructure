@@ -16,30 +16,16 @@ El sistema utiliza una arquitectura orientada a eventos (EDA) impulsada por **Ap
 
 ### Componentes Principales:
 
-<<<<<<< HEAD
-* **Servicio de Mascotas (ASP.NET 10 Core):** Encargado de la gestión y registro de los animales. Publica eventos (Producer) como "Animal registrado como perdido" en Kafka. Utiliza una base de datos **PostgreSQL**.
-* **Servicio de Coincidencias (Java Spring):** Consume eventos de Kafka para analizar y marcar coincidencias entre mascotas perdidas y encontradas. Tiene su propia base de datos **PostgreSQL**.
-* **Servicio de Geolocalización (Java Spring):** Consume eventos para gestionar las ubicaciones geográficas de los avistamientos y pérdidas. Utiliza **PostGIS** para el manejo avanzado de datos espaciales.
-* **Servicio de Notificaciones (Java WebFlux):** Consume eventos para enviar notificaciones a los usuarios.
-* **Servicio de Mensajeria (Java Quarkus):** Encargado del sistema de mensajeria entre usuarios
-* **Servicio de usuarios (C++ Drogon):** Encargado de enmascarar llamadas de registro a keycloak
-* **Apache Kafka:** Actúa como el bus de mensajes del sistema.
-* **Seguridad (Keycloak):** Autenticación y autorización delegadas.
-* **Frontend (React):** Interfaz de usuario final que se comunica a través del Gateway.
-* **Landing (Astro):** Landing de la web
-=======
-* **Servicio de Mascotas (C# ASP.NET):** Encargado de la gestión y registro de los animales. Publica eventos (Producer) como "Animal registrado como perdido" en Kafka. Utiliza una base de datos **PostgreSQL**.
-* **Servicio de Coincidencias (Java Spring):** Consume eventos de Kafka para analizar y marcar coincidencias entre mascotas perdidas y encontradas. Tiene su propia base de datos **PostgreSQL**.
-* **Servicio de Geolocalización (Java Spring):** Consume eventos para gestionar las ubicaciones geográficas de los avistamientos y pérdidas. Utiliza **PostGIS** para el manejo avanzado de datos espaciales. *NO REALIZADO*
-* **Servicio de Notificaciones (Java Spring WebFlux):** Consume eventos para enviar notificaciones a los usuarios.
-* **Servicio de Mensajeria (Java Quarkus):** Centraliza las operaciones en los mensajes.
-* **Servicio de Usuarios (C++ Drogon):** BFF de keycloak, además encargado de persistir metadatos extra de los usuarios.
-* **Servicio de Api Gateway (Java Spring Cloud MVC):** El punto de entrada hacía el Backend.
-* **Apache Kafka:**Es el bus de mensajes del sistema.
-* **Seguridad:** Autenticación y autorización delegadas a **Keycloak** propio.
-* **Frontend (React & Astro):** Interfaz de usuario final que se comunica a través del Gateway.
-* **Aplicación Móvil (Flutter):** Cliente móvil de la aplicación 
->>>>>>> 4e27581f8c895abfed83185c84d7993b9a8fa895
+* **Servicio de Mascotas (C# .NET 10 ASP.NET Core):** Gestión y registro de animales. Publica eventos en Kafka. Base de datos **PostgreSQL**.
+* **Servicio de Coincidencias (Java Spring):** Consume eventos de Kafka para detectar coincidencias entre mascotas perdidas y encontradas. Base de datos **PostgreSQL**.
+* **Servicio de Notificaciones (Java Spring WebFlux):** Consume eventos y envía notificaciones en tiempo real vía WebSocket.
+* **Servicio de Mensajeria (Java Quarkus):** Sistema de mensajería entre usuarios. Base de datos **MongoDB**.
+* **Servicio de Usuarios (C++ Drogon):** BFF de Keycloak, persiste metadatos extra de usuarios. Base de datos **PostgreSQL**.
+* **API Gateway (Java Spring Cloud MVC):** Punto de entrada al backend con validación JWT.
+* **Apache Kafka:** Bus de mensajes del sistema (3 topics).
+* **Seguridad:** Autenticación y autorización delegadas a **Keycloak**.
+* **Frontend (React 19 + Astro 6):** Interfaz de usuario y landing page.
+* **Aplicación Móvil (Flutter):** Cliente móvil de la aplicación.
 
 <br>
 
