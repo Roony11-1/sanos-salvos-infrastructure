@@ -93,3 +93,5 @@ El sistema usa un gateway en el puerto 8080, el resto esta privado de la red loc
 
 ## Para probar sonarqube para cualquier microservicio Maven Primero runnear las pruebas del microservicio y despues hacer esto:.
 .\mvnw.cmd sonar:sonar "-Dsonar.projectKey=message-service" "-Dsonar.host.url=http://localhost:9000" "-Dsonar.login=sqp_32876bd725f1eb79ef70224758f42a09e93a2ff4"
+
+docker compose run --rm --entrypoint jmeter jmeter -n -t /tests/sanos-plan.jmx -l /tests/results.jtl -e -o /tests/report/
