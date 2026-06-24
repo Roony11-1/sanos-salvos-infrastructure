@@ -1,0 +1,13 @@
+# Resultados de ejecución
+*.jtl
+*.log
+*.json
+
+# Datos generados
+usuarios.csv
+
+# But track scripts, plans, and report output
+!*.jmx
+!*.ps1
+!*.sh
+!report/
