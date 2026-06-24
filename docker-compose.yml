@@ -202,7 +202,7 @@ services:
       args:
         RUN_TESTS: "${RUN_TESTS:-false}"
         GENERATE_COVERAGE: "${GENERATE_COVERAGE:-false}"
-        VITE_API_GATEWAY_URL: "${VITE_API_GATEWAY_URL:-http://localhost:8080}"
+        VITE_API_GATEWAY_URL: "${VITE_API_GATEWAY_URL}"
     container_name: frontend
     ports:
       - "${FRONTEND_HOST_PORT:-80}:${FRONTEND_PORT:-80}"
@@ -279,29 +279,6 @@ services:
     depends_on:
       - gateway
 
-  test-runner:
-    build:
-      context: ..
-      dockerfile: tests/Dockerfile
-    container_name: test-runner
-    profiles:
-      - test
-    volumes:
-      - ../sanos-gateway:/app/sanos-gateway
-      - ../coincidencias-service:/app/coincidencias-service
-      - ../notification-service:/app/notification-service
-      - ../message-service:/app/message-service
-      - ../mascotas-service:/app/mascotas-service
-      - ../user-service:/app/user-service
-      - ../sanos-salvos-front:/app/sanos-salvos-front
-      - coverage-data:/coverage
-    depends_on:
-      sonarqube:
-        condition: service_healthy
-    environment:
-      SONAR_HOST_URL: http://sonarqube:9000
-      SONAR_TOKEN: sqp_32876bd725f1eb79ef70224758f42a09e93a2ff4
-
 networks:
   default:
     name: ${NETWORK_NAME:-sanos-salvos-network}
@@ -319,5 +296,3 @@ volumes:
   sonarqube-data:
   sonarqube-logs:
   sonarqube-extensions:
-
-  coverage-data:
