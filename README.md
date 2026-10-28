@@ -25,7 +25,6 @@ El sistema utiliza una arquitectura orientada a eventos (EDA) impulsada por **Ap
 * **Apache Kafka:** Bus de mensajes del sistema (3 topics).
 * **Seguridad:** Autenticación y autorización delegadas a **Keycloak**.
 * **Frontend (React 19 + Astro 6):** Interfaz de usuario y landing page.
-* **Aplicación Móvil (Flutter):** Cliente móvil de la aplicación.
 
 <br>
 
@@ -54,7 +53,6 @@ El proyecto está dividido en los siguientes repositorios. Es necesario tenerlos
 
 * [Mascotas Service](https://github.com/Roony11-1/mascotas-service)
 * [Coincidencias Service](https://github.com/Roony11-1/coincidencias-service)
-* [Geolocalización Service](https://github.com/Roony11-1/geo-service)
 * [Notification Service](https://github.com/Roony11-1/notification-service)
 * [Messages Service](https://github.com/Roony11-1/message-service)
 * [Users Service](https://github.com/Roony11-1/user-service)
